@@ -17,6 +17,11 @@
 		7D0803DD15DA8CCE007395D3 /* EMMediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D515DA8CCE007395D3 /* EMMediaItem.m */; };
 		7D0803DE15DA8CCE007395D3 /* EMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D815DA8CCE007395D3 /* EMPlayer.m */; };
 		7D0803DF15DA8CCE007395D3 /* EMPlayerEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803DB15DA8CCE007395D3 /* EMPlayerEvents.m */; };
+		7D0803E515DA8E1D007395D3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803E415DA8E1D007395D3 /* AVFoundation.framework */; };
+		7D0803E715DA8E27007395D3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803E615DA8E27007395D3 /* CoreMedia.framework */; };
+		7D0803E815DA8E87007395D3 /* SamplePlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803E215DA8CFF007395D3 /* SamplePlayController.m */; };
+		7D0803EA15DA8EA1007395D3 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803E915DA8EA1007395D3 /* MediaPlayer.framework */; };
+		7D0803EB15DA94B3007395D3 /* SamplePlayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D0803E315DA8CFF007395D3 /* SamplePlayController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +48,9 @@
 		7D0803E115DA8CFF007395D3 /* SamplePlayController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SamplePlayController.h; sourceTree = "<group>"; };
 		7D0803E215DA8CFF007395D3 /* SamplePlayController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SamplePlayController.m; sourceTree = "<group>"; };
 		7D0803E315DA8CFF007395D3 /* SamplePlayController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SamplePlayController.xib; sourceTree = "<group>"; };
+		7D0803E415DA8E1D007395D3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		7D0803E615DA8E27007395D3 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		7D0803E915DA8EA1007395D3 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D0803EA15DA8EA1007395D3 /* MediaPlayer.framework in Frameworks */,
+				7D0803E715DA8E27007395D3 /* CoreMedia.framework in Frameworks */,
+				7D0803E515DA8E1D007395D3 /* AVFoundation.framework in Frameworks */,
 				7D0803B315DA8C19007395D3 /* UIKit.framework in Frameworks */,
 				7D0803B515DA8C19007395D3 /* Foundation.framework in Frameworks */,
 				7D0803B715DA8C19007395D3 /* CoreGraphics.framework in Frameworks */,
@@ -62,6 +73,9 @@
 		7D0803A315DA8C19007395D3 = {
 			isa = PBXGroup;
 			children = (
+				7D0803E915DA8EA1007395D3 /* MediaPlayer.framework */,
+				7D0803E615DA8E27007395D3 /* CoreMedia.framework */,
+				7D0803E415DA8E1D007395D3 /* AVFoundation.framework */,
 				7D0803B815DA8C19007395D3 /* SamplePlayer */,
 				7D0803B115DA8C19007395D3 /* Frameworks */,
 				7D0803AF15DA8C19007395D3 /* Products */,
@@ -89,10 +103,10 @@
 		7D0803B815DA8C19007395D3 /* SamplePlayer */ = {
 			isa = PBXGroup;
 			children = (
+				7D0803D115DA8CCE007395D3 /* ElevatorMusic */,
 				7D0803E115DA8CFF007395D3 /* SamplePlayController.h */,
 				7D0803E215DA8CFF007395D3 /* SamplePlayController.m */,
 				7D0803E315DA8CFF007395D3 /* SamplePlayController.xib */,
-				7D0803D115DA8CCE007395D3 /* ElevatorMusic */,
 				7D0803C115DA8C19007395D3 /* AppDelegate.h */,
 				7D0803C215DA8C19007395D3 /* AppDelegate.m */,
 				7D0803B915DA8C19007395D3 /* Supporting Files */,
@@ -180,6 +194,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D0803EB15DA94B3007395D3 /* SamplePlayController.xib in Resources */,
 				7D0803BD15DA8C19007395D3 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -191,6 +206,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D0803E815DA8E87007395D3 /* SamplePlayController.m in Sources */,
 				7D0803BF15DA8C19007395D3 /* main.m in Sources */,
 				7D0803C315DA8C19007395D3 /* AppDelegate.m in Sources */,
 				7D0803DC15DA8CCE007395D3 /* EMBackgroundController.m in Sources */,

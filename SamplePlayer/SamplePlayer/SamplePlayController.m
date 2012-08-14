@@ -76,8 +76,8 @@
 @synthesize forwardButton = forwardButton_;
 @synthesize volumeViewContainer = volumeViewContainer_;
 
-- (id)init {
-  self = [super init];
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
     isUpdatingTable_ = NO;
     isDraggingSlider_ = NO;

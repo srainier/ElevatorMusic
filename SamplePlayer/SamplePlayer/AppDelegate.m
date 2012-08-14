@@ -26,7 +26,7 @@
 #import "SamplePlayController.h"
 #import "EMPlayer.h"
 
-@interface EMAppDelegate ()
+@interface AppDelegate ()
 
 @property (nonatomic, retain) EMBackgroundController* backgroundController;
 @property (nonatomic, retain) SamplePlayController* samplePlayController;
@@ -34,7 +34,7 @@
 
 @end
 
-@implementation EMAppDelegate
+@implementation AppDelegate
 
 @synthesize window = _window;
 @synthesize backgroundController = backgroundController_;
@@ -47,14 +47,14 @@
   player_ = [[EMPlayer alloc] init];
   backgroundController_ = [[EMBackgroundController alloc] init];
   backgroundController_.player = player_;
-  self.window.rootViewController = backgroundController_;
   
-  samplePlayController_ = [[SamplePlayController alloc] init];
+  samplePlayController_ = [[SamplePlayController alloc] initWithNibName:nil bundle:nil];
   samplePlayController_.player = player_;
   [backgroundController_.view addSubview:samplePlayController_.view];
   
   [backgroundController_ becomeActiveAudioController];
   
+  self.window.rootViewController = backgroundController_;
   self.window.backgroundColor = [UIColor whiteColor];
   [self.window makeKeyAndVisible];
   return YES;
