@@ -1,0 +1,312 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7D0803B315DA8C19007395D3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803B215DA8C19007395D3 /* UIKit.framework */; };
+		7D0803B515DA8C19007395D3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803B415DA8C19007395D3 /* Foundation.framework */; };
+		7D0803B715DA8C19007395D3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803B615DA8C19007395D3 /* CoreGraphics.framework */; };
+		7D0803BD15DA8C19007395D3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D0803BB15DA8C19007395D3 /* InfoPlist.strings */; };
+		7D0803BF15DA8C19007395D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803BE15DA8C19007395D3 /* main.m */; };
+		7D0803C315DA8C19007395D3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803C215DA8C19007395D3 /* AppDelegate.m */; };
+		7D0803DC15DA8CCE007395D3 /* EMBackgroundController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D315DA8CCE007395D3 /* EMBackgroundController.m */; };
+		7D0803DD15DA8CCE007395D3 /* EMMediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D515DA8CCE007395D3 /* EMMediaItem.m */; };
+		7D0803DE15DA8CCE007395D3 /* EMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D815DA8CCE007395D3 /* EMPlayer.m */; };
+		7D0803DF15DA8CCE007395D3 /* EMPlayerEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803DB15DA8CCE007395D3 /* EMPlayerEvents.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7D0803AE15DA8C19007395D3 /* SamplePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamplePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D0803B215DA8C19007395D3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		7D0803B415DA8C19007395D3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7D0803B615DA8C19007395D3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		7D0803BA15DA8C19007395D3 /* SamplePlayer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SamplePlayer-Info.plist"; sourceTree = "<group>"; };
+		7D0803BC15DA8C19007395D3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7D0803BE15DA8C19007395D3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7D0803C015DA8C19007395D3 /* SamplePlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SamplePlayer-Prefix.pch"; sourceTree = "<group>"; };
+		7D0803C115DA8C19007395D3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		7D0803C215DA8C19007395D3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		7D0803D215DA8CCE007395D3 /* EMBackgroundController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMBackgroundController.h; sourceTree = "<group>"; };
+		7D0803D315DA8CCE007395D3 /* EMBackgroundController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMBackgroundController.m; sourceTree = "<group>"; };
+		7D0803D415DA8CCE007395D3 /* EMMediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMMediaItem.h; sourceTree = "<group>"; };
+		7D0803D515DA8CCE007395D3 /* EMMediaItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMMediaItem.m; sourceTree = "<group>"; };
+		7D0803D615DA8CCE007395D3 /* EMPlaybackControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlaybackControl.h; sourceTree = "<group>"; };
+		7D0803D715DA8CCE007395D3 /* EMPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayer.h; sourceTree = "<group>"; };
+		7D0803D815DA8CCE007395D3 /* EMPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayer.m; sourceTree = "<group>"; };
+		7D0803D915DA8CCE007395D3 /* EMPlayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayerDelegate.h; sourceTree = "<group>"; };
+		7D0803DA15DA8CCE007395D3 /* EMPlayerEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayerEvents.h; sourceTree = "<group>"; };
+		7D0803DB15DA8CCE007395D3 /* EMPlayerEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayerEvents.m; sourceTree = "<group>"; };
+		7D0803E115DA8CFF007395D3 /* SamplePlayController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SamplePlayController.h; sourceTree = "<group>"; };
+		7D0803E215DA8CFF007395D3 /* SamplePlayController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SamplePlayController.m; sourceTree = "<group>"; };
+		7D0803E315DA8CFF007395D3 /* SamplePlayController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SamplePlayController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7D0803AB15DA8C19007395D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D0803B315DA8C19007395D3 /* UIKit.framework in Frameworks */,
+				7D0803B515DA8C19007395D3 /* Foundation.framework in Frameworks */,
+				7D0803B715DA8C19007395D3 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7D0803A315DA8C19007395D3 = {
+			isa = PBXGroup;
+			children = (
+				7D0803B815DA8C19007395D3 /* SamplePlayer */,
+				7D0803B115DA8C19007395D3 /* Frameworks */,
+				7D0803AF15DA8C19007395D3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7D0803AF15DA8C19007395D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7D0803AE15DA8C19007395D3 /* SamplePlayer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7D0803B115DA8C19007395D3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7D0803B215DA8C19007395D3 /* UIKit.framework */,
+				7D0803B415DA8C19007395D3 /* Foundation.framework */,
+				7D0803B615DA8C19007395D3 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7D0803B815DA8C19007395D3 /* SamplePlayer */ = {
+			isa = PBXGroup;
+			children = (
+				7D0803E115DA8CFF007395D3 /* SamplePlayController.h */,
+				7D0803E215DA8CFF007395D3 /* SamplePlayController.m */,
+				7D0803E315DA8CFF007395D3 /* SamplePlayController.xib */,
+				7D0803D115DA8CCE007395D3 /* ElevatorMusic */,
+				7D0803C115DA8C19007395D3 /* AppDelegate.h */,
+				7D0803C215DA8C19007395D3 /* AppDelegate.m */,
+				7D0803B915DA8C19007395D3 /* Supporting Files */,
+			);
+			path = SamplePlayer;
+			sourceTree = "<group>";
+		};
+		7D0803B915DA8C19007395D3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7D0803BA15DA8C19007395D3 /* SamplePlayer-Info.plist */,
+				7D0803BB15DA8C19007395D3 /* InfoPlist.strings */,
+				7D0803BE15DA8C19007395D3 /* main.m */,
+				7D0803C015DA8C19007395D3 /* SamplePlayer-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7D0803D115DA8CCE007395D3 /* ElevatorMusic */ = {
+			isa = PBXGroup;
+			children = (
+				7D0803D215DA8CCE007395D3 /* EMBackgroundController.h */,
+				7D0803D315DA8CCE007395D3 /* EMBackgroundController.m */,
+				7D0803D415DA8CCE007395D3 /* EMMediaItem.h */,
+				7D0803D515DA8CCE007395D3 /* EMMediaItem.m */,
+				7D0803D615DA8CCE007395D3 /* EMPlaybackControl.h */,
+				7D0803D715DA8CCE007395D3 /* EMPlayer.h */,
+				7D0803D815DA8CCE007395D3 /* EMPlayer.m */,
+				7D0803D915DA8CCE007395D3 /* EMPlayerDelegate.h */,
+				7D0803DA15DA8CCE007395D3 /* EMPlayerEvents.h */,
+				7D0803DB15DA8CCE007395D3 /* EMPlayerEvents.m */,
+			);
+			name = ElevatorMusic;
+			path = ../../ElevatorMusic;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7D0803AD15DA8C19007395D3 /* SamplePlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D0803C615DA8C19007395D3 /* Build configuration list for PBXNativeTarget "SamplePlayer" */;
+			buildPhases = (
+				7D0803AA15DA8C19007395D3 /* Sources */,
+				7D0803AB15DA8C19007395D3 /* Frameworks */,
+				7D0803AC15DA8C19007395D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SamplePlayer;
+			productName = SamplePlayer;
+			productReference = 7D0803AE15DA8C19007395D3 /* SamplePlayer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7D0803A515DA8C19007395D3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = ElevatorMusic;
+			};
+			buildConfigurationList = 7D0803A815DA8C19007395D3 /* Build configuration list for PBXProject "SamplePlayer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7D0803A315DA8C19007395D3;
+			productRefGroup = 7D0803AF15DA8C19007395D3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7D0803AD15DA8C19007395D3 /* SamplePlayer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7D0803AC15DA8C19007395D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D0803BD15DA8C19007395D3 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7D0803AA15DA8C19007395D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D0803BF15DA8C19007395D3 /* main.m in Sources */,
+				7D0803C315DA8C19007395D3 /* AppDelegate.m in Sources */,
+				7D0803DC15DA8CCE007395D3 /* EMBackgroundController.m in Sources */,
+				7D0803DD15DA8CCE007395D3 /* EMMediaItem.m in Sources */,
+				7D0803DE15DA8CCE007395D3 /* EMPlayer.m in Sources */,
+				7D0803DF15DA8CCE007395D3 /* EMPlayerEvents.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7D0803BB15DA8C19007395D3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D0803BC15DA8C19007395D3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7D0803C415DA8C19007395D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		7D0803C515DA8C19007395D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7D0803C715DA8C19007395D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SamplePlayer/SamplePlayer-Prefix.pch";
+				INFOPLIST_FILE = "SamplePlayer/SamplePlayer-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		7D0803C815DA8C19007395D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SamplePlayer/SamplePlayer-Prefix.pch";
+				INFOPLIST_FILE = "SamplePlayer/SamplePlayer-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7D0803A815DA8C19007395D3 /* Build configuration list for PBXProject "SamplePlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D0803C415DA8C19007395D3 /* Debug */,
+				7D0803C515DA8C19007395D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D0803C615DA8C19007395D3 /* Build configuration list for PBXNativeTarget "SamplePlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D0803C715DA8C19007395D3 /* Debug */,
+				7D0803C815DA8C19007395D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7D0803A515DA8C19007395D3 /* Project object */;
+}
