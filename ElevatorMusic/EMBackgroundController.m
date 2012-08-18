@@ -37,19 +37,22 @@
 
 @implementation EMBackgroundController
 
-@synthesize interfaceOrientation = interfaceOrientation_;
+@synthesize allowedInterfaceOrientations = allowedInterfaceOrientations_;
 @synthesize player = player_;
 
 - (id)init {
   self = [super init];
   if (self) {
-    interfaceOrientation_ = UIInterfaceOrientationPortrait;
+    allowedInterfaceOrientations_ = UIInterfaceOrientationPortrait
+                                  | UIInterfaceOrientationPortraitUpsideDown
+                                  | UIInterfaceOrientationLandscapeLeft
+                                  | UIInterfaceOrientationLandscapeRight;
   }
   return self;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-  return (interfaceOrientation == self.interfaceOrientation);
+  return (interfaceOrientation & self.allowedInterfaceOrientations);
 }
 
 //

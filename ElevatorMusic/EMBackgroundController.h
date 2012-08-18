@@ -25,9 +25,15 @@
 #import "EMPlaybackControl.h"
 @class EMPlayer;
 
+#define EMInterfaceOrientations NSUInteger
+
 @interface EMBackgroundController : UIViewController
 
-@property (nonatomic) UIInterfaceOrientation interfaceOrientation;
+// This property can be set to any masked combination of the possible
+// UIInterfaceOrientation values.
+// The default is to allow all orientations.
+@property (nonatomic) EMInterfaceOrientations allowedInterfaceOrientations;
+
 @property (nonatomic, weak) id<EMPlaybackControl> player;
 
 - (void) becomeActiveAudioController;
