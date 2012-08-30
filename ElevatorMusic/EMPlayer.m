@@ -133,6 +133,14 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   }
 }
 
+- (void) togglePlayPause {
+  if (self.isPlaying) {
+    [self pause];
+  } else {
+    [self play];
+  }
+}
+
 - (void) jumpToTime:(NSTimeInterval)time {
   
   if (self.hasCurrentItem) {
@@ -363,7 +371,25 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   } else if ([object isKindOfClass:[AVPlayerItem class]] && [keyPath isEqualToString:@"status"]) {
     if ([@(NSKeyValueChangeSetting) isEqual:[change objectForKey:NSKeyValueChangeNewKey]]) {
       
-      // TODO: yeah, I'm just not handling this yet...
+      AVPlayerItem* playerItem = object;
+      NSUInteger itemIndex = [queuePlayer_.items indexOfObject:playerItem];
+      if (NSNotFound == itemIndex) {
+        // Hmm...
+      } else {
+        EMMediaItem* mediaItem = [items_ objectAtIndex:itemIndex];
+        if ([self.delegate respondsToSelector:@selector(player:didInitalizeMediaItem:success:)]) {
+          [delegate_ player:self didInitalizeMediaItem:mediaItem
+                    success:(AVPlayerItemStatusReadyToPlay == playerItem.status)];
+        }
+        
+        if (AVPlayerItemStatusReadyToPlay == playerItem.status) {
+          [self postPlayerEvent:EMPlayerDidInitalizeMediaItemSuccessfully withItem:mediaItem];
+        } else {
+          [self postPlayerEvent:EMPlayerFailedToInitializeMediaItem withItem:mediaItem];
+        }
+      }
+      
+      // TODO: just handling this quickly... what else?
      
       handled = YES;
     }

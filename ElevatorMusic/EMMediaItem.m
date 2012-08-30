@@ -35,4 +35,8 @@
   return self;
 }
 
++ (id) itemWithUrl:(NSURL*)url {
+  return [[EMMediaItem alloc] initWithUrl:url];
+}
+
 @end

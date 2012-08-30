@@ -28,6 +28,7 @@
 @property (nonatomic, readonly) BOOL isPlaying;
 - (void) play;
 - (void) pause;
+- (void) togglePlayPause;
 
 @optional
 

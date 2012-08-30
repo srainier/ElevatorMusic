@@ -26,6 +26,7 @@
 @interface EMMediaItem : NSObject
 
 - (id) initWithUrl:(NSURL*)url;
++ (id) itemWithUrl:(NSURL*)url;
 
 @property (nonatomic, strong, readonly) NSURL* url;
 
