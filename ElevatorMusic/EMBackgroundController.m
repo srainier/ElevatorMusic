@@ -133,13 +133,13 @@
         
       case UIEventSubtypeRemoteControlPreviousTrack: {
         // check setting: function and/or amount
-        [player_ jumpByTime:30];
+        [player_ jumpByTime:-30];
         break;
       }
         
       case UIEventSubtypeRemoteControlNextTrack: {
         // check setting: function and/or amount
-        [player_ jumpByTime:-30];
+        [player_ jumpByTime:30];
         //[player_ moveToNext];
         break;
       }
