@@ -30,4 +30,9 @@
 
 @property (nonatomic, strong, readonly) NSURL* url;
 
+@property (nonatomic, retain) NSString* title;
+@property (nonatomic, retain) NSString* artist;
+@property (nonatomic, retain) NSString* album;
+@property (nonatomic, retain) NSData* artwork;
+
 @end
