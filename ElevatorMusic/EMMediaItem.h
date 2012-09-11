@@ -26,9 +26,12 @@
 @interface EMMediaItem : NSObject
 
 - (id) initWithUrl:(NSURL*)url;
+- (id) initWithUrl:(NSURL*)url userInfo:(id)userInfo;
 + (id) itemWithUrl:(NSURL*)url;
++ (id) itemWithUrl:(NSURL*)url userInfo:(id)userInfo;
 
 @property (nonatomic, strong, readonly) NSURL* url;
+@property (nonatomic, strong, readonly) id userInfo;
 
 @property (nonatomic, retain) NSString* title;
 @property (nonatomic, retain) NSString* artist;

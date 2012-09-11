@@ -26,17 +26,27 @@
 @implementation EMMediaItem
 
 @synthesize url = url_;
+@synthesize userInfo = userInfo_;
 
 - (id) initWithUrl:(NSURL*)url {
+  return [self initWithUrl:url userInfo:nil];
+}
+
+- (id) initWithUrl:(NSURL*)url userInfo:(id)userInfo {
   self = [super init];
   if (nil != self) {
     url_ = url;
+    userInfo_ = userInfo;
   }
   return self;
 }
 
 + (id) itemWithUrl:(NSURL*)url {
-  return [[EMMediaItem alloc] initWithUrl:url];
+  return [EMMediaItem itemWithUrl:url userInfo:nil];
+}
+
++ (id) itemWithUrl:(NSURL*)url userInfo:(id)userInfo {
+  return [[EMMediaItem alloc] initWithUrl:url userInfo:userInfo];
 }
 
 @end
