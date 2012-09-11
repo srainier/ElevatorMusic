@@ -333,8 +333,16 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   BOOL handled = NO;
   if (object == queuePlayer_ && [keyPath isEqualToString:@"status"]) {
     
-    if ([@(NSKeyValueChangeSetting) isEqual:[change objectForKey:NSKeyValueChangeNewKey]]) {
+    NSNumber* changeKind = [change objectForKey:NSKeyValueChangeKindKey];
+    if ([@(NSKeyValueChangeSetting) isEqual:changeKind]) {
       [queuePlayer_ removeObserver:self forKeyPath:@"status" context:NULL];
+      
+      AVPlayerStatus playerStatus = AVPlayerStatusUnknown;
+      if (nil != [change objectForKey:NSKeyValueChangeNewKey]) {
+        playerStatus = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
+      } else {
+        playerStatus = queuePlayer_.status;
+      }
       
       if (AVPlayerStatusReadyToPlay == queuePlayer_.status) {
         // hmm
@@ -369,24 +377,40 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
     }
 
   } else if ([object isKindOfClass:[AVPlayerItem class]] && [keyPath isEqualToString:@"status"]) {
-    if ([@(NSKeyValueChangeSetting) isEqual:[change objectForKey:NSKeyValueChangeNewKey]]) {
-      
+    
+    NSNumber* changeKind = [change objectForKey:NSKeyValueChangeKindKey];
+    
+    if ([@(NSKeyValueChangeSetting) isEqual:changeKind]) {
+
+      // Get the player item's index in the queue.
       AVPlayerItem* playerItem = object;
       NSUInteger itemIndex = [queuePlayer_.items indexOfObject:playerItem];
-      if (NSNotFound == itemIndex) {
-        // Hmm...
+      
+      // Get the status of the player item.
+      AVPlayerItemStatus playerItemStatus = AVPlayerItemStatusUnknown;
+      if (nil != [change objectForKey:NSKeyValueChangeNewKey]) {
+        playerItemStatus = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
       } else {
-        EMMediaItem* mediaItem = [items_ objectAtIndex:itemIndex];
-        if ([self.delegate respondsToSelector:@selector(player:didInitalizeMediaItem:success:)]) {
-          [delegate_ player:self didInitalizeMediaItem:mediaItem
-                    success:(AVPlayerItemStatusReadyToPlay == playerItem.status)];
-        }
-        
-        if (AVPlayerItemStatusReadyToPlay == playerItem.status) {
-          [self postPlayerEvent:EMPlayerDidInitalizeMediaItemSuccessfully withItem:mediaItem];
+        // If the 'new' key isn't in the change dictionary, check the player item.
+        // Not sure how reliable this method is.
+        if (NSNotFound == itemIndex) {
+          // Can't find the player item, so treat loading as failed.
+          playerItemStatus = AVPlayerItemStatusFailed;
         } else {
-          [self postPlayerEvent:EMPlayerFailedToInitializeMediaItem withItem:mediaItem];
+          playerItemStatus = playerItem.status;
         }
+      }
+      
+      EMMediaItem* mediaItem = [items_ objectAtIndex:itemIndex];
+      if ([self.delegate respondsToSelector:@selector(player:didInitalizeMediaItem:success:)]) {
+        [delegate_ player:self didInitalizeMediaItem:mediaItem
+                  success:(AVPlayerItemStatusReadyToPlay == playerItemStatus)];
+      }
+      
+      if (AVPlayerItemStatusReadyToPlay == playerItemStatus) {
+        [self postPlayerEvent:EMPlayerDidInitalizeMediaItemSuccessfully withItem:mediaItem];
+      } else {
+        [self postPlayerEvent:EMPlayerFailedToInitializeMediaItem withItem:mediaItem];
       }
       
       // TODO: just handling this quickly... what else?
