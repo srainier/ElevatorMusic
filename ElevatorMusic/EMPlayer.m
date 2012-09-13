@@ -116,6 +116,7 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 - (void) play {
   if (self.hasCurrentItem) {
     [queuePlayer_ play];
+    // Change this event based on first play?
     if ([self.delegate respondsToSelector:@selector(player:didPlayItem:)]) {
       [self.delegate player:self didPlayItem:self.currentItem];
     }
@@ -347,18 +348,16 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
       if (AVPlayerStatusReadyToPlay == queuePlayer_.status) {
         // hmm
         __block EMPlayer* blockSelf = self;
-        timeObserver_ = [queuePlayer_ addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1.0, 1)
-                                                                   queue:dispatch_get_main_queue()
-                                                              usingBlock:^(CMTime t) {
-                                                                if (self.hasCurrentItem) {
-                                                                  NSTimeInterval time = CMTimeGetSeconds(t);
-                                                                  NSTimeInterval duration = CMTimeGetSeconds(blockSelf.currentPlayerItem.duration);
-                                                                  if ([blockSelf.delegate respondsToSelector:@selector(player:didReachTime:forItem:duration:)]) {
-                                                                    [blockSelf.delegate player:blockSelf didReachTime:time forItem:blockSelf.currentItem duration:duration];
-                                                                  }
-                                                                  [blockSelf postPlayerEvent:EMPlayerDidReachTime withItem:blockSelf.currentItem time:time duration:duration];
-                                                                }
-                                                              }];
+        timeObserver_ = [queuePlayer_ addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1.0, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime t) {
+          if (self.hasCurrentItem) {
+            NSTimeInterval time = CMTimeGetSeconds(t);
+            NSTimeInterval duration = CMTimeGetSeconds(blockSelf.currentPlayerItem.duration);
+            if ([blockSelf.delegate respondsToSelector:@selector(player:didReachTime:forItem:duration:)]) {
+              [blockSelf.delegate player:blockSelf didReachTime:time forItem:blockSelf.currentItem duration:duration];
+            }
+            [blockSelf postPlayerEvent:EMPlayerDidReachTime withItem:blockSelf.currentItem time:time duration:duration];
+          }
+        }];
         
         if ([self.delegate respondsToSelector:@selector(player:didInitalizeSuccessfully:)]) {
           [delegate_ player:self didInitalizeSuccessfully:YES];
@@ -446,7 +445,11 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
 - (AVPlayerItem*) currentPlayerItem {
   if (self.hasCurrentItem) {
-    return [queuePlayer_.items objectAtIndex:0];
+    if (0 == queuePlayer_.items.count) {
+      return nil;
+    } else {
+      return [queuePlayer_.items objectAtIndex:0];
+    }
   } else {
     return nil;
   }
