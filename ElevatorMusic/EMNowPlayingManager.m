@@ -14,6 +14,7 @@
 @interface EMNowPlayingManager ()
 
 - (void) playerDidPlay:(NSNotification*)notification;
+- (void) playerDidComplete:(NSNotification*)notification;
 
 @end
 
@@ -22,11 +23,13 @@
 - (void) start {
   NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(playerDidPlay:) name:EMPlayerDidPlay object:nil];
+  [nc addObserver:self selector:@selector(playerDidComplete:) name:EMPlayerDidComplete object:nil];
 }
 
 - (void) stop {
   NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
   [nc removeObserver:self name:EMPlayerDidPlay object:nil];
+  [nc removeObserver:self name:EMPlayerDidComplete object:nil];
 }
 
 //
@@ -61,5 +64,13 @@
   [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nowPlayingInfo];
 }
 
+- (void) playerDidComplete:(NSNotification*)notification {
+  NSMutableDictionary* nowPlayingInfo = [NSMutableDictionary dictionary];
+  [nowPlayingInfo setObject:@"" forKey:MPMediaItemPropertyTitle];
+  [nowPlayingInfo setObject:@"" forKey:MPMediaItemPropertyArtist];
+  [nowPlayingInfo setObject:@"" forKey:MPMediaItemPropertyAlbumTitle];
+  [nowPlayingInfo setObject:[[MPMediaItemArtwork alloc] init] forKey:MPMediaItemPropertyArtwork];
+  [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:nowPlayingInfo];
+}
 
 @end

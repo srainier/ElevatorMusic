@@ -535,6 +535,7 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   if ([self.delegate respondsToSelector:@selector(player:didCompleteItem:)]) {
     [self.delegate player:self didCompleteItem:self.currentItem];
   }
+  [self postPlayerEvent:EMPlayerDidComplete withItem:self.currentItem]; // index?
   
   [self advanceToNextItem];
   
