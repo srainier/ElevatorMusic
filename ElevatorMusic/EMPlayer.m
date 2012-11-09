@@ -153,6 +153,7 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
       [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(time, 1.0)];
 
     } else {
+      [queuePlayer_ seekToTime:self.currentPlayerItem.duration];
       // TODO: track completion logic here.
       // Hmm - will this trigger 'track complete' event?
     }
