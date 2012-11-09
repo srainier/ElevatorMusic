@@ -143,17 +143,18 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 }
 
 - (void) jumpToTime:(NSTimeInterval)time {
-  
   if (self.hasCurrentItem) {
-    if (time < CMTimeGetSeconds(self.currentPlayerItem.duration)) {
-      if (time < 0.0) {
-        time = 0.0;
-      }
+    if (time < 0.0) {
+      time = 0.0;
+    }
 
-      [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(time, 1.0)];
-
-    } else {
-      [queuePlayer_ seekToTime:self.currentPlayerItem.duration];
+    [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(time, 1.0)];
+    
+    // If the jump-to time is past the end of the player item the player item
+    // won't complete if it is paused. Calling play will lead to the 'did complete'
+    // event.
+    if (CMTimeGetSeconds(self.currentPlayerItem.duration) < time) {
+      [queuePlayer_ play];
     }
   }
 }
@@ -530,16 +531,13 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 }
 
 - (void) itemCompleted:(NSNotification*)notification {
-  
   if ([self.delegate respondsToSelector:@selector(player:didCompleteItem:)]) {
     [self.delegate player:self didCompleteItem:self.currentItem];
   }
+  
   [self postPlayerEvent:EMPlayerDidComplete withItem:self.currentItem]; // index?
   
   [self advanceToNextItem];
-  
-  // anything else?
-  
 }
 
 - (void) itemFailedToComplete:(NSNotification*)notification {
