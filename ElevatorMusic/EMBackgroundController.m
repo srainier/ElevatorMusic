@@ -23,16 +23,13 @@
 
 #import "EMBackgroundController.h"
 #import "EMPlayer.h"
+#import "EMBackgroundControllerProxy.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface EMBackgroundController ()
+@interface EMBackgroundController () {
+  EMBackgroundControllerProxy* backgroundControllerProxy_;
+}
 
-- (void) startAudioSession;
-- (void) endAudioSession;
-
-@end
-
-@interface EMBackgroundController (AudioSessions) <AVAudioSessionDelegate>
 @end
 
 @implementation EMBackgroundController
@@ -40,9 +37,16 @@
 @synthesize allowedInterfaceOrientations = allowedInterfaceOrientations_;
 @synthesize player = player_;
 
+- (void) setPlayer:(id<EMPlaybackControl>)player {
+  player_ = player;
+  backgroundControllerProxy_.player = player;
+}
+
 - (id)init {
   self = [super init];
   if (self) {
+    backgroundControllerProxy_ = [[EMBackgroundControllerProxy alloc] init];
+    backgroundControllerProxy_.proxyResponder = self;
     allowedInterfaceOrientations_ = UIInterfaceOrientationPortrait
                                   | UIInterfaceOrientationPortraitUpsideDown
                                   | UIInterfaceOrientationLandscapeLeft
@@ -60,39 +64,11 @@
 //
 
 - (void) becomeActiveAudioController {
-  [self startAudioSession];
-  [self becomeFirstResponder];
-  [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+  [backgroundControllerProxy_ becomeActiveAudioController];
 }
 
 - (void) resignActiveAudioController {
-  [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
-  [self resignFirstResponder];
-  [self endAudioSession];
-}
-
-//
-// Helper methods
-//
-
-- (void) startAudioSession {
-  AVAudioSession *session = [AVAudioSession sharedInstance];
-  session.delegate = self;
-
-  NSError *activationError = nil;
-  [session setActive:YES error:&activationError];
-  
-  NSError *setCategoryError = nil;
-  [session setCategory:AVAudioSessionCategoryPlayback
-                 error:&setCategoryError];  
-}
-
-- (void) endAudioSession {
-  AVAudioSession *session = [AVAudioSession sharedInstance];
-  session.delegate = nil;
-  
-  NSError *activationError = nil;
-  [session setActive:NO withFlags:AVAudioSessionSetActiveFlags_NotifyOthersOnDeactivation error:&activationError];
+  [backgroundControllerProxy_ resignActiveAudioController];
 }
 
 //
@@ -105,93 +81,9 @@
 }
 
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event {
-  if (event.type == UIEventTypeRemoteControl) {
-    switch (event.subtype) {
-      case UIEventSubtypeRemoteControlPlay: {
-        [player_ play];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlPause: {
-        [player_ pause];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlStop: {
-        [player_ pause];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlTogglePlayPause: {
-        if (player_.isPlaying) {
-          [player_ pause];
-        } else {
-          [player_ play];
-        }
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlPreviousTrack: {
-        // check setting: function and/or amount
-        [player_ jumpByTime:-30];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlNextTrack: {
-        // check setting: function and/or amount
-        [player_ jumpByTime:30];
-        //[player_ moveToNext];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlBeginSeekingBackward: {
-        [player_ beginSeekForward:NO];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlEndSeekingBackward: {
-        [player_ endSeek];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlBeginSeekingForward: {
-        [player_ beginSeekForward:YES];
-        break;
-      }
-        
-      case UIEventSubtypeRemoteControlEndSeekingForward: {
-        [player_ endSeek];
-        break;
-      }
-        
-      default:
-        break;
-    }
-  } else {
+  if (![backgroundControllerProxy_ handleRemoteControlReceivedEvent:event]) {
     [super remoteControlReceivedWithEvent:event];
   }
 }
-
-
-@end
-
-@implementation EMBackgroundController (AudioSessions)
-
-- (void) beginInterruption {
-  // FROM DOC: By the time this interruption arrives, your audio has already stopped.
-  // endAudioSession ?
-  [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
-  [self resignFirstResponder]; 
-}
-
-- (void) endInterruptionWithFlags:(NSUInteger)flags {
-  [self becomeActiveAudioController];
-
-  BOOL shouldResume = (flags & AVAudioSessionInterruptionFlags_ShouldResume);
-  if (shouldResume) {
-    [player_ play];
-  }
-}
-
 
 @end
