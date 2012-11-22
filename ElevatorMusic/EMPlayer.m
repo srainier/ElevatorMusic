@@ -126,11 +126,13 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
 - (void) pause {
   if (self.hasCurrentItem) {
-    [queuePlayer_ pause];
-    if ([self.delegate respondsToSelector:@selector(player:didPauseItem:)]) {
-      [self.delegate player:self didPauseItem:self.currentItem];
-    }
-    [self postPlayerEvent:EMPlayerDidPause withItem:self.currentItem];
+    if (self.isPlaying) {
+      [queuePlayer_ pause];
+      if ([self.delegate respondsToSelector:@selector(player:didPauseItem:)]) {
+        [self.delegate player:self didPauseItem:self.currentItem];
+      }
+      [self postPlayerEvent:EMPlayerDidPause withItem:self.currentItem];
+    }    
   }
 }
 
