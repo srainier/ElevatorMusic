@@ -23,27 +23,22 @@
 
 #import "EMPlayerEvents.h"
 
-NSString* const EMMediaItemKey = @"com.ElevatorMusic.EMMediaItemKey";
-NSString* const EMTimeKey = @"com.ElevatorMusic.EMTimeKey";
-NSString* const EMDurationKey = @"com.ElevatorMusic.EMDurationKey";
-NSString* const EMSeekForwardKey = @"com.ElevatorMusic.EMSeekForwardKey";
-NSString* const EMOldItemKey = @"com.ElevatorMusic.EMOldItemKey";
-NSString* const EMNewItemKey = @"com.ElevatorMusic.EMNewItemKey";
-NSString* const EMIndexKey = @"com.ElevatorMusic.EMIndexKey";
-NSString* const EMPlayerDidInitalizeSuccessfully = @"com.ElevatorMusic.EMPlayerDidInitalizeSuccessfully";
-NSString* const EMPlayerFailedToInitialize = @"com.ElevatorMusic.EMPlayerFailedToInitialize";
-NSString* const EMPlayerDidInitalizeMediaItemSuccessfully = @"com.ElevatorMusic.EMPlayerDidInitalizeMediaItemSuccessfully";
-NSString* const EMPlayerFailedToInitializeMediaItem = @"com.ElevatorMusic.EMPlayerFailedToInitializeMediaItem";
-NSString* const EMPlayerDidStart = @"com.ElevatorMusic.EMPlayerDidStart";
-NSString* const EMPlayerDidPlay = @"com.ElevatorMusic.EMPlayerDidPlay";
-NSString* const EMPlayerDidPause = @"com.ElevatorMusic.EMPlayerDidPause";
-NSString* const EMPlayerDidReachTime = @"com.ElevatorMusic.EMPlayerDidReachTime";
-NSString* const EMPlayerDidComplete = @"com.ElevatorMusic.EMPlayerDidComplete";
-NSString* const EMPlayerDidStartSeeking = @"com.ElevatorMusic.EMPlayerDidStartSeeking";
-NSString* const EMPlayerDidEndSeeking = @"com.ElevatorMusic.EMPlayerDidEndSeeking";
-NSString* const EMPlayerWillAdvance = @"com.ElevatorMusic.EMPlayerWillAdvance";
-NSString* const EMPlayerDidAdvance = @"com.ElevatorMusic.EMPlayerDidAdvance";
-NSString* const EMPlayerWillAddItem = @"com.ElevatorMusic.EMPlayerWillAddItem";
-NSString* const EMPlayerDidAddItem = @"com.ElevatorMusic.EMPlayerDidAddItem";
-NSString* const EMPlayerWillRemoveItem = @"com.ElevatorMusic.EMPlayerWillRemoveItem";
-NSString* const EMPlayerDidRemoveItem = @"com.ElevatorMusic.EMPlayerDidRemoveItem";
+NSString* const EMMediaItemKey = @"com.ElevatorMusic.MediaItemKey";
+NSString* const EMTimeKey = @"com.ElevatorMusic.TimeKey";
+NSString* const EMDurationKey = @"com.ElevatorMusic.DurationKey";
+NSString* const EMSeekForwardKey = @"com.ElevatorMusic.SeekForwardKey";
+
+NSString* const EMPlayerDidInitalize = @"com.ElevatorMusic.PlayerDidInitalize";
+NSString* const EMPlayerFailedToInitialize = @"com.ElevatorMusic.PlayerFailedToInitialize";
+NSString* const EMPlayerWillInitalizeMediaItem = @"com.ElevatorMusic.PlayerWillInitalizeMediaItem";
+NSString* const EMPlayerDidInitalizeMediaItem = @"com.ElevatorMusic.PlayerDidInitalizeMediaItem";
+NSString* const EMPlayerFailedToInitializeMediaItem = @"com.ElevatorMusic.PlayerFailedToInitializeMediaItem";
+NSString* const EMPlayerWillRemoveCurrentMediaItem = @"com.ElevatorMusic.PlayerWillRemoveCurrentMediaItem";
+NSString* const EMPlayerDidRemoveCurrentMediaItem = @"com.ElevatorMusic.PlayerDidRemoveCurrentMediaItem";
+
+NSString* const EMPlayerDidPlay = @"com.ElevatorMusic.PlayerDidPlay";
+NSString* const EMPlayerDidPause = @"com.ElevatorMusic.PlayerDidPause";
+NSString* const EMPlayerDidReachTime = @"com.ElevatorMusic.PlayerDidReachTime";
+NSString* const EMPlayerDidComplete = @"com.ElevatorMusic.PlayerDidComplete";
+NSString* const EMPlayerDidStartSeeking = @"com.ElevatorMusic.PlayerDidStartSeeking";
+NSString* const EMPlayerDidEndSeeking = @"com.ElevatorMusic.PlayerDidEndSeeking";

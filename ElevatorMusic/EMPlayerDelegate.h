@@ -29,10 +29,15 @@
 
 @optional
 
-- (void) player:(EMPlayer*)player didInitalizeSuccessfully:(BOOL)success;
-- (void) player:(EMPlayer*)player didInitalizeMediaItem:(EMMediaItem*)item success:(BOOL)success;
+- (void) playerDidInitialize:(EMPlayer*)player;
+- (void) playerFailedToInitialize:(EMPlayer*)player;
 
-- (void) player:(EMPlayer*)player didStartItem:(EMMediaItem*)item;
+- (void) player:(EMPlayer*)player willInitalizeMediaItem:(EMMediaItem*)item;
+- (void) player:(EMPlayer*)player didInitalizeMediaItem:(EMMediaItem*)item;
+- (void) player:(EMPlayer*)player failedToInitalizeMediaItem:(EMMediaItem*)item;
+- (void) player:(EMPlayer*)player willRemoveCurrentMediaItem:(EMMediaItem*)item;
+- (void) player:(EMPlayer*)player didRemoveCurrentMediaItem:(EMMediaItem*)item;
+
 - (void) player:(EMPlayer*)player didPlayItem:(EMMediaItem*)item;
 - (void) player:(EMPlayer*)player didPauseItem:(EMMediaItem*)item;
 - (void) player:(EMPlayer*)player didReachTime:(NSTimeInterval)time forItem:(EMMediaItem*)item duration:(NSTimeInterval)duration;
@@ -40,13 +45,5 @@
 
 - (void) player:(EMPlayer*)player didStartSeekingItem:(EMMediaItem*)item forward:(BOOL)forward;
 - (void) player:(EMPlayer*)player didEndSeekingItem:(EMMediaItem*)item;
-
-- (void) player:(EMPlayer*)player willAdvanceFromItem:(EMMediaItem*)oldItem toItem:(EMMediaItem*)newItem;
-- (void) player:(EMPlayer*)player didAdvanceFromItem:(EMMediaItem*)oldItem toItem:(EMMediaItem*)newItem;
-
-- (void) player:(EMPlayer*)player willAddItem:(EMMediaItem*)item atIndex:(NSUInteger)index;
-- (void) player:(EMPlayer*)player didAddItem:(EMMediaItem*)item atIndex:(NSUInteger)index;
-- (void) player:(EMPlayer*)player willRemoveItem:(EMMediaItem*)item atIndex:(NSUInteger)index;
-- (void) player:(EMPlayer*)player didRemoveItem:(EMMediaItem*)item atIndex:(NSUInteger)index;
 
 @end

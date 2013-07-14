@@ -29,26 +29,19 @@ extern NSString* const EMMediaItemKey; // EMMediaItem
 extern NSString* const EMTimeKey; // NSNumber (NSTimeInterval)
 extern NSString* const EMDurationKey; // NSNumber (NSTimeInterval)
 extern NSString* const EMSeekForwardKey; // bool
-extern NSString* const EMOldItemKey; // EMMediaItem
-extern NSString* const EMNewItemKey; // EMMediaItem
-extern NSString* const EMIndexKey; // NSUInteger
 
-extern NSString* const EMPlayerDidInitalizeSuccessfully;
+extern NSString* const EMPlayerDidInitalize;
 extern NSString* const EMPlayerFailedToInitialize;
 
-extern NSString* const EMPlayerDidInitalizeMediaItemSuccessfully;
+extern NSString* const EMPlayerWillInitalizeMediaItem;
+extern NSString* const EMPlayerDidInitalizeMediaItem;
 extern NSString* const EMPlayerFailedToInitializeMediaItem;
+extern NSString* const EMPlayerWillRemoveCurrentMediaItem;
+extern NSString* const EMPlayerDidRemoveCurrentMediaItem;
 
-extern NSString* const EMPlayerDidStart; //Item;
 extern NSString* const EMPlayerDidPlay; //Item;
 extern NSString* const EMPlayerDidPause; //tItem;
 extern NSString* const EMPlayerDidReachTime; // time, item
 extern NSString* const EMPlayerDidComplete; //Item;
 extern NSString* const EMPlayerDidStartSeeking; //Item, forward
 extern NSString* const EMPlayerDidEndSeeking; //Item, forward
-extern NSString* const EMPlayerWillAdvance; // old item, new item, forward
-extern NSString* const EMPlayerDidAdvance;  // old item, new item, forward
-extern NSString* const EMPlayerWillAddItem; // item, index, total
-extern NSString* const EMPlayerDidAddItem; // item, index, total
-extern NSString* const EMPlayerWillRemoveItem; // item, index, total
-extern NSString* const EMPlayerDidRemoveItem;

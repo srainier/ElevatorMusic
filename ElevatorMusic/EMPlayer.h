@@ -30,19 +30,13 @@
 
 @property (nonatomic, readonly) BOOL isSetup;
 @property (nonatomic, readonly) NSTimeInterval currentTime;
-@property (nonatomic, strong, readonly) NSArray* items;
 @property (nonatomic, strong, readonly) EMMediaItem* currentItem;
-@property (nonatomic, strong, readonly) EMMediaItem* nextItem;
 @property (nonatomic, weak) id<EMPlayerDelegate> delegate;
 
 - (void) setup;
 - (void) cleanup;
 
-- (BOOL) addItem:(EMMediaItem*)item error:(NSError**)error;
-- (BOOL) insertItem:(EMMediaItem*)item atIndex:(NSUInteger)index;
-- (BOOL) insertItems:(NSArray*)items atIndex:(NSUInteger)index;
-- (BOOL) removeItem:(EMMediaItem*)item;
-//- (EMMediaItem*) removeItem:(EMMediaItem*)item atIndex:(NSUInteger)index error:(NSError**)error;
-- (EMMediaItem*) removeItemAtIndex:(NSUInteger)index error:(NSError**)error;
+- (void) addItem:(EMMediaItem*)item;
+- (void) removeCurrentItem;
 
 @end

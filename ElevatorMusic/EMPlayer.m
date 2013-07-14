@@ -33,26 +33,18 @@
 const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
 @interface EMPlayer () {
-  NSMutableArray* items_;
-  AVQueuePlayer* queuePlayer_;
-  id timeObserver_;
-  NSTimer* seekTimer_;
+  AVQueuePlayer *_queuePlayer;
+  id _timeObserver;
+  NSTimer *_seekTimer;
 }
 
-@property (nonatomic, readonly) BOOL isItemsEmpty;
-@property (nonatomic, readonly) BOOL hasCurrentItem;
-
 @property (nonatomic, strong, readonly) AVPlayerItem* currentPlayerItem;
-@property (nonatomic, strong, readonly) AVPlayerItem* nextPlayerItem;
-
-- (BOOL) validateQueueItems;
 
 // Item creation and cleanup
 - (AVPlayerItem*) createPlayerItemWithUrl:(NSURL*)url;
 - (void) cleanupItem:(AVPlayerItem*)playerItem;
 
 // Item completion
-- (void) advanceToNextItem;
 - (void) itemCompleted:(NSNotification*)notification;
 - (void) itemFailedToComplete:(NSNotification*)notification;
 
@@ -66,24 +58,14 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 - (void) postPlayerEvent:(NSString*)eventName withItem:(EMMediaItem*)item;
 - (void) postPlayerEvent:(NSString*)eventName withItem:(EMMediaItem*)item time:(NSTimeInterval)time duration:(NSTimeInterval)duration;
 - (void) postPlayerEvent:(NSString*)eventName withItem:(EMMediaItem*)item forward:(BOOL)forward;
-- (void) postPlayerEvent:(NSString*)eventName withOldItem:(EMMediaItem*)oldItem withNewItem:(EMMediaItem*)newItem;
-- (void) postPlayerEvent:(NSString*)eventName withItem:(EMMediaItem*)item atIndex:(NSUInteger)index;
 
 @end
 
 @implementation EMPlayer
 
 @dynamic isPlaying;
-@synthesize isSetup = isSetup_;
 @dynamic currentTime;
-@dynamic items;
-@dynamic currentItem;
-@dynamic nextItem;
-@synthesize delegate = delegate_;
-@dynamic isItemsEmpty;
-@dynamic hasCurrentItem;
 @dynamic currentPlayerItem;
-@dynamic nextPlayerItem;
 
 //
 // Parent overrides
@@ -92,10 +74,9 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 - (id) init {
   self = [super init];
   if (nil != self) {
-    items_ = [NSMutableArray array];
-    queuePlayer_ = nil;
-    timeObserver_ = nil;
-    isSetup_ = NO;
+    _queuePlayer = nil;
+    _timeObserver = nil;
+    _isSetup = NO;
   }
   return self;
 }
@@ -105,18 +86,14 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 //
 
 - (BOOL) isPlaying {
-  if (self.hasCurrentItem) {
-    // TODO: player/item status?
-    return (0.0 != queuePlayer_.rate);
-  } else {
-    return NO;
-  }
+  return (nil != _currentItem) ? (0.0 != _queuePlayer.rate) : NO;
 }
 
 - (void) play {
-  if (self.hasCurrentItem) {
-    [queuePlayer_ play];
-    // Change this event based on first play?
+  if (nil != _currentItem) {
+    [_queuePlayer play];
+
+    // Notify delegate and event listeners.
     if ([self.delegate respondsToSelector:@selector(player:didPlayItem:)]) {
       [self.delegate player:self didPlayItem:self.currentItem];
     }
@@ -125,9 +102,11 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 }
 
 - (void) pause {
-  if (self.hasCurrentItem) {
+  if (nil != _currentItem) {
     if (self.isPlaying) {
-      [queuePlayer_ pause];
+      [_queuePlayer pause];
+
+      // Notify delegate and event listeners.
       if ([self.delegate respondsToSelector:@selector(player:didPauseItem:)]) {
         [self.delegate player:self didPauseItem:self.currentItem];
       }
@@ -145,49 +124,52 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 }
 
 - (void) jumpToTime:(NSTimeInterval)time {
-  if (self.hasCurrentItem) {
+  if (nil != _currentItem) {
     if (time < 0.0) {
       time = 0.0;
     }
 
-    [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(time, 1.0)];
+    [_queuePlayer seekToTime:CMTimeMakeWithSeconds(time, 1.0)];
     
-    // If the jump-to time is past the end of the player item the player item
-    // won't complete if it is paused. Calling play will lead to the 'did complete'
-    // event.
+    // If the jump-to time is past the end of the AVPlayerItem's duration
+    // and the player is paused the AVPlayerItem won't complete.
+    // Calling play will lead to the 'did complete' event. Otherwise this
+    // will not affect the play/pause state of the player.
     if (CMTimeGetSeconds(self.currentPlayerItem.duration) < time) {
-      [queuePlayer_ play];
+      [_queuePlayer play];
     }
   }
 }
 
 - (void) jumpByTime:(NSTimeInterval)timeDelta {
-  if (self.hasCurrentItem) {
+  if (nil != _currentItem) {
     NSTimeInterval time = CMTimeGetSeconds(self.currentPlayerItem.currentTime) + timeDelta;
     [self jumpToTime:time];
   }
 }
 
 - (void) beginSeekForward:(BOOL)forward {
-  // NOTE: could experiment with faster playback rather than jumping...
-  [self seekTimeDelta:(forward ? 10.0 : -10.0) afterDuration:0.5];
-  if ([self.delegate respondsToSelector:@selector(player:didStartSeekingItem:forward:)]) {
-    [self.delegate player:self didStartSeekingItem:self.currentItem forward:YES];
+  if (nil != _currentItem) {
+    [self seekTimeDelta:(forward ? 10.0 : -10.0) afterDuration:0.5];
+
+    // Notify delegate and event listeners.
+    if ([self.delegate respondsToSelector:@selector(player:didStartSeekingItem:forward:)]) {
+      [self.delegate player:self didStartSeekingItem:self.currentItem forward:YES];
+    }
+    [self postPlayerEvent:EMPlayerDidStartSeeking withItem:self.currentItem forward:forward];
   }
-  [self postPlayerEvent:EMPlayerDidStartSeeking withItem:self.currentItem forward:forward];
 }
 
 - (void) endSeek {
-  [self cancelSeekTime];
-  if ([self.delegate respondsToSelector:@selector(player:didEndSeekingItem:)]) {
-    [self.delegate player:self didEndSeekingItem:self.currentItem];
+  if (nil != _currentItem) {
+    [self cancelSeekTime];
+    
+    // Notify delegate and event listeners.
+    if ([self.delegate respondsToSelector:@selector(player:didEndSeekingItem:)]) {
+      [self.delegate player:self didEndSeekingItem:self.currentItem];
+    }
+    [self postPlayerEvent:EMPlayerDidEndSeeking withItem:self.currentItem];
   }
-  [self postPlayerEvent:EMPlayerDidEndSeeking withItem:self.currentItem];
-}
-
-- (BOOL) moveToNext {
-  [self advanceToNextItem];
-  return YES;
 }
 
 //
@@ -195,137 +177,70 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 //
 
 - (NSTimeInterval) currentTime {
-  return self.hasCurrentItem ? CMTimeGetSeconds(self.currentPlayerItem.currentTime) : 0.0;
-}
-
-- (NSArray*)items {
-  return [NSArray arrayWithArray:items_];
-}
-
-- (EMMediaItem*) currentItem {
-  if (self.hasCurrentItem) {
-    return [items_ objectAtIndex:0];
-  } else {
-    return nil;
-  }
-}
-
-- (EMMediaItem*) nextItem {
-  if (self.hasCurrentItem) {
-    return (1 < items_.count) ? [items_ objectAtIndex:1] : nil;
-  } else {
-    return nil;
-  }
+  return nil != _currentItem ? CMTimeGetSeconds(self.currentPlayerItem.currentTime) : 0.0;
 }
 
 
 - (void) setup {
-  queuePlayer_ = [[AVQueuePlayer alloc] init];
-  [queuePlayer_ addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:NULL];
+  _queuePlayer = [[AVQueuePlayer alloc] init];
+  [_queuePlayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) cleanup {
-
-  // TODO: this was thrown together.
-  [queuePlayer_ pause];
-  if (0 < queuePlayer_.items.count) {
-    [self removeItemAtIndex:0 error:nil];
-  }
+  [self removeCurrentItem];
 }
 
-- (BOOL) addItem:(EMMediaItem*)media error:(NSError**)error {
-  return [self insertItem:media atIndex:items_.count];
-}
-
-- (BOOL) insertItem:(EMMediaItem*)item atIndex:(NSUInteger)index {
+- (void) addItem:(EMMediaItem*)item {
   
-  // sanity check:
-  if (items_.count != queuePlayer_.items.count) {
-    NSLog(@"items (%d) and queue items (%d) out of sync", items_.count, queuePlayer_.items.count);
-  }
-  
-  NSUInteger existingItemIndex = [items_ indexOfObject:item];
-  if (NSNotFound != existingItemIndex) {
-    @throw [NSException exceptionWithName:@"EMPlayerException" reason:@"Inserting media item that already exists" userInfo:nil];
-  }
-  
-  BOOL didInsert = NO;
-  if (index <= items_.count) {
-    AVPlayerItem* playerItem = [self createPlayerItemWithUrl:item.url];
-    if (nil != playerItem) {
-      AVPlayerItem* playerItemInsertAfter = (0 == index) ? nil : [queuePlayer_.items objectAtIndex:index - 1];
+  // Cleanup existing item
+  [self removeCurrentItem];
 
-      if ([self.delegate respondsToSelector:@selector(player:willAddItem:atIndex:)]) {
-        [self.delegate player:self willAddItem:item atIndex:index]; // not sure about count - before or after amount?
-      }
-      [self postPlayerEvent:EMPlayerWillAddItem withItem:item atIndex:index];
-      
-      [queuePlayer_ insertItem:playerItem afterItem:playerItemInsertAfter];
-      [items_ insertObject:item atIndex:index];
+  AVPlayerItem* playerItem = [self createPlayerItemWithUrl:item.url];
+  if (nil != playerItem) {
 
-      if ([self.delegate respondsToSelector:@selector(player:didAddItem:atIndex:)]) {
-        [self.delegate player:self didAddItem:item atIndex:index]; // not sure about count - before or after amount?
-      }
-      [self postPlayerEvent:EMPlayerWillAddItem withItem:item atIndex:index];
-      
-      didInsert = YES;
+    // Notify delegate and event listeners
+    if ([self.delegate respondsToSelector:@selector(player:willInitalizeMediaItem:)]) {
+      [self.delegate player:self willInitalizeMediaItem:item]; // not sure about count - before or after amount?
     }
-  }
-  
-  return didInsert;
-}
-
-- (BOOL) insertItems:(NSArray*)items atIndex:(NSUInteger)index {
-  // TODO: special case for inserting at index '0'
-  return NO;
-}
-
-- (BOOL) removeItem:(EMMediaItem*)item {
-  NSUInteger removeItemIndex = [items_ indexOfObject:item];
-  if (NSNotFound != removeItemIndex) {
-    return nil != [self removeItemAtIndex:removeItemIndex error:nil];
-  } else {
-    return NO;
-  }
-}
-
-- (EMMediaItem*) removeItemAtIndex:(NSUInteger)index error:(NSError**)error {
-
-  // sanity check:
-  if (items_.count != queuePlayer_.items.count) {
-    NSLog(@"items (%d) and queue items (%d) out of sync", items_.count, queuePlayer_.items.count);
-  }
-  
-  EMMediaItem* removedItem = nil;
-  
-  if (index < items_.count) {
-    removedItem = [items_ objectAtIndex:index];
+    [self postPlayerEvent:EMPlayerWillInitalizeMediaItem withItem:item];
     
-    if ([self.delegate respondsToSelector:@selector(player:willRemoveItem:atIndex:)]) {
-      [self.delegate player:self willRemoveItem:removedItem atIndex:index];
+    _currentItem = item;
+    [_queuePlayer insertItem:playerItem afterItem:nil];
+    
+    // The initialized/failed event will come in response to the AVPlayerItem
+    // load event.
+  }
+  
+}
+
+- (void) removeCurrentItem {
+  
+  if (nil != _currentItem) {
+
+    // Stop playback before cleanup.
+    [_queuePlayer pause];
+    
+    // Notify delegate and event listeners of 'will remove'.
+    if ([self.delegate respondsToSelector:@selector(player:willRemoveCurrentMediaItem:)]) {
+      [self.delegate player:self willRemoveCurrentMediaItem:self.currentItem];
     }
-    [self postPlayerEvent:EMPlayerWillRemoveItem withItem:removedItem atIndex:index];
+    [self postPlayerEvent:EMPlayerWillRemoveCurrentMediaItem];
     
-    AVPlayerItem* playerItemToRemove = [queuePlayer_.items objectAtIndex:index];
-    if (0 == index) {
-      // special case - advance?
-      [queuePlayer_ pause]; // post notif?
-                            // what about end of track cleanup?
+    // Loop just in case there happens to be more than one item.
+    while (0 < _queuePlayer.items.count) {
+      // Cleanup the AVPlayerItem at the front of the queue.
+      AVPlayerItem* playerItemToRemove = _queuePlayer.items[0];
       [self cleanupItem:playerItemToRemove];
-      [queuePlayer_ advanceToNextItem];
-    } else {
-      [self cleanupItem:playerItemToRemove];
-      [queuePlayer_ removeItem:playerItemToRemove];
+      [_queuePlayer advanceToNextItem];
     }
-    [items_ removeObjectAtIndex:index];
+    _currentItem = nil;
     
-    if ([self.delegate respondsToSelector:@selector(player:didRemoveItem:atIndex:)]) {
-      [self.delegate player:self didRemoveItem:removedItem atIndex:index];
+    // Notify delegate and event listeners of 'did remove'.
+    if ([self.delegate respondsToSelector:@selector(player:didRemoveCurrentMediaItem:)]) {
+      [self.delegate player:self didRemoveCurrentMediaItem:self.currentItem];
     }
-    [self postPlayerEvent:EMPlayerWillRemoveItem withItem:removedItem atIndex:index];
+    [self postPlayerEvent:EMPlayerDidRemoveCurrentMediaItem];
   }
-  
-  return removedItem;
 }
 
 //
@@ -333,48 +248,29 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 //
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  BOOL handled = NO;
-  if (object == queuePlayer_ && [keyPath isEqualToString:@"status"]) {
+
+  if (object == _queuePlayer && [keyPath isEqualToString:@"status"]) {
     
     NSNumber* changeKind = [change objectForKey:NSKeyValueChangeKindKey];
     if ([@(NSKeyValueChangeSetting) isEqual:changeKind]) {
-      [queuePlayer_ removeObserver:self forKeyPath:@"status" context:NULL];
-      
-      AVPlayerStatus playerStatus = AVPlayerStatusUnknown;
-      if (nil != [change objectForKey:NSKeyValueChangeNewKey]) {
-        playerStatus = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
-      } else {
-        playerStatus = queuePlayer_.status;
-      }
-      
-      if (AVPlayerStatusReadyToPlay == queuePlayer_.status) {
-        // hmm
-        __block EMPlayer* blockSelf = self;
-        timeObserver_ = [queuePlayer_ addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1.0, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime t) {
-          if (self.hasCurrentItem) {
-            NSTimeInterval time = CMTimeGetSeconds(t);
-            NSTimeInterval duration = CMTimeGetSeconds(blockSelf.currentPlayerItem.duration);
-            if ([blockSelf.delegate respondsToSelector:@selector(player:didReachTime:forItem:duration:)]) {
-              [blockSelf.delegate player:blockSelf didReachTime:time forItem:blockSelf.currentItem duration:duration];
-            }
-            [blockSelf postPlayerEvent:EMPlayerDidReachTime withItem:blockSelf.currentItem time:time duration:duration];
-          }
-        }];
+
+      // Cleanup the observer.
+      [_queuePlayer removeObserver:self forKeyPath:@"status" context:NULL];
+            
+      if (AVPlayerStatusReadyToPlay == _queuePlayer.status) {
         
-        if ([self.delegate respondsToSelector:@selector(player:didInitalizeSuccessfully:)]) {
-          [delegate_ player:self didInitalizeSuccessfully:YES];
+        if ([self.delegate respondsToSelector:@selector(playerDidInitialize:)]) {
+          [_delegate playerDidInitialize:self];
         }
-        [self postPlayerEvent:EMPlayerDidInitalizeSuccessfully];
-        
+        [self postPlayerEvent:EMPlayerDidInitalize];
         
       } else {
-        if ([self.delegate respondsToSelector:@selector(player:didInitalizeSuccessfully:)]) {
-          [delegate_ player:self didInitalizeSuccessfully:NO];
+        if ([self.delegate respondsToSelector:@selector(playerFailedToInitialize:)]) {
+          [_delegate playerFailedToInitialize:self];
         }
         [self postPlayerEvent:EMPlayerFailedToInitialize];
       }
-      
-      handled = YES;
+
     }
 
   } else if ([object isKindOfClass:[AVPlayerItem class]] && [keyPath isEqualToString:@"status"]) {
@@ -385,7 +281,7 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
       // Get the player item's index in the queue.
       AVPlayerItem* playerItem = object;
-      NSUInteger itemIndex = [queuePlayer_.items indexOfObject:playerItem];
+      NSUInteger itemIndex = [_queuePlayer.items indexOfObject:playerItem];
       
       // Get the status of the player item.
       AVPlayerItemStatus playerItemStatus = AVPlayerItemStatusUnknown;
@@ -401,34 +297,57 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
           playerItemStatus = playerItem.status;
         }
       }
-      
-      EMMediaItem* mediaItem = [items_ objectAtIndex:itemIndex];
-      if ([self.delegate respondsToSelector:@selector(player:didInitalizeMediaItem:success:)]) {
-        [delegate_ player:self didInitalizeMediaItem:mediaItem
-                  success:(AVPlayerItemStatusReadyToPlay == playerItemStatus)];
-      }
-      
+
+      EMMediaItem* mediaItem = self.currentItem;
       if (AVPlayerItemStatusReadyToPlay == playerItemStatus) {
-        [self postPlayerEvent:EMPlayerDidInitalizeMediaItemSuccessfully withItem:mediaItem];
+        
+        // Send the 'did initialize' event to the delegate and event observers.
+        if ([self.delegate respondsToSelector:@selector(player:didInitalizeMediaItem:)]) {
+          [_delegate player:self didInitalizeMediaItem:mediaItem];
+        }
+        [self postPlayerEvent:EMPlayerDidInitalizeMediaItem withItem:mediaItem];
+
+        // Create a new time observer that specifically checks for time events for this
+        // media item. The time observer gets recreated for each media item because
+        // the AVPlayer can leak time events for an item after it has been removed.
+        // We only want time events to be handled for the player's current item.
+        [self clearTimeObserver];
+        __block EMPlayer* blockSelf = self;
+
+        _timeObserver = [_queuePlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1.0, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime t) {
+          
+          // Only handle the event if the time event is for the current item.
+          if (mediaItem == blockSelf.currentItem) {
+            // Get the time reported and duration of the currently-playing item.
+            NSTimeInterval time = CMTimeGetSeconds(t);
+            NSTimeInterval duration = CMTimeGetSeconds(blockSelf.currentPlayerItem.duration);
+            
+            // Notify delegate and event listeners.
+            if ([blockSelf.delegate respondsToSelector:@selector(player:didReachTime:forItem:duration:)]) {
+              [blockSelf.delegate player:blockSelf didReachTime:time forItem:blockSelf.currentItem duration:duration];
+            }
+            [blockSelf postPlayerEvent:EMPlayerDidReachTime withItem:blockSelf.currentItem time:time duration:duration];
+          }
+          
+        }];
+
       } else {
+        
+        if ([self.delegate respondsToSelector:@selector(player:failedToInitalizeMediaItem:)]) {
+          [_delegate player:self failedToInitalizeMediaItem:mediaItem];
+        }
         [self postPlayerEvent:EMPlayerFailedToInitializeMediaItem withItem:mediaItem];
+        
       }
-      
-      // TODO: just handling this quickly... what else?
-     
-      handled = YES;
+
     }
-    
+
   } else if ([object isKindOfClass:[AVPlayerItem class]] && [keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
+
     if ([@(NSKeyValueChangeSetting) isEqual:[change objectForKey:NSKeyValueChangeNewKey]]) {
-      // TODO: handle this as appropriate
-      handled = YES;
+
     }
     
-  }
-  
-  if (!handled) {
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
 }
 
@@ -436,59 +355,25 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 // Helper methods and dynamic properties
 //
 
-- (BOOL) isItemsEmpty {
-  return (nil == items_) || (0 == items_.count);
-}
-
-- (BOOL) hasCurrentItem {
-  // NOTE: unclear what the second condition what checking...
-  return !self.isItemsEmpty;
-}
-
 - (AVPlayerItem*) currentPlayerItem {
-  if (self.hasCurrentItem) {
-    if (0 == queuePlayer_.items.count) {
+  if (nil != _currentItem) {
+    if (0 == _queuePlayer.items.count) {
       return nil;
     } else {
-      return [queuePlayer_.items objectAtIndex:0];
+      return [_queuePlayer.items objectAtIndex:0];
     }
   } else {
     return nil;
   }
 }
 
-- (AVPlayerItem*) nextPlayerItem {
-  if (self.hasCurrentItem && (1 < items_.count && 1 < queuePlayer_.items.count)) {
-    return [queuePlayer_.items objectAtIndex:1];
-  } else {
-    return nil;
-  }
-}
-
-- (BOOL) validateQueueItems {
-  if (!self.hasCurrentItem) {
-    return 0 == queuePlayer_.items.count;
-  } else if (queuePlayer_.items.count == items_.count) {
-    __block BOOL sameUrls = YES;
-    [queuePlayer_.items enumerateObjectsUsingBlock:^(id playerItem, NSUInteger idx, BOOL *stop) {
-      if ([[playerItem asset] isKindOfClass:[AVURLAsset class]]) {
-        if (![[[items_ objectAtIndex:idx] url] isEqual:[(AVURLAsset*)[playerItem asset] URL]]) {
-          sameUrls = NO;
-          *stop = YES;
-        }
-      }
-    }];
-    return sameUrls;
-  } else {
-    return NO;
-  }
-}
 
 - (AVPlayerItem*) createPlayerItemWithUrl:(NSURL*)url {
   
   AVPlayerItem* playerItem = [AVPlayerItem playerItemWithURL:url];
   
   if (nil != playerItem) {
+
     [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:NULL];
     [playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:NULL];
     
@@ -499,7 +384,18 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   return playerItem;
 }
 
+- (void) clearTimeObserver {
+  
+  if (nil != _timeObserver) {
+    [_queuePlayer removeTimeObserver:_timeObserver];
+    _timeObserver = nil;
+  }
+  
+}
+
 - (void) cleanupItem:(AVPlayerItem*)playerItem {
+  
+  [self clearTimeObserver];
   
   [playerItem removeObserver:self forKeyPath:@"status" context:NULL];
   [playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp" context:NULL];
@@ -508,38 +404,16 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemFailedToPlayToEndTimeNotification object:playerItem];
 }
 
-- (void) advanceToNextItem {
-  if (self.hasCurrentItem) {
-    [queuePlayer_ pause];
-    [self cleanupItem:self.currentPlayerItem];
-    
-    EMMediaItem* oldItem = self.currentItem;
-    EMMediaItem* newItem = self.nextItem;
-    
-    if ([self.delegate respondsToSelector:@selector(player:willAdvanceFromItem:toItem:)]) {
-      [self.delegate player:self willAdvanceFromItem:oldItem toItem:newItem];
-    }
-    [self postPlayerEvent:EMPlayerWillAdvance withOldItem:oldItem withNewItem:newItem];
-    
-    [queuePlayer_ advanceToNextItem];
-    [items_ removeObjectAtIndex:0];
-    
-    if ([self.delegate respondsToSelector:@selector(player:didAdvanceFromItem:toItem:)]) {
-      [self.delegate player:self didAdvanceFromItem:oldItem toItem:newItem];
-    }
-    [self postPlayerEvent:EMPlayerDidAdvance withOldItem:oldItem withNewItem:newItem];
-    
-  }
-}
 
 - (void) itemCompleted:(NSNotification*)notification {
   if ([self.delegate respondsToSelector:@selector(player:didCompleteItem:)]) {
     [self.delegate player:self didCompleteItem:self.currentItem];
   }
   
-  [self postPlayerEvent:EMPlayerDidComplete withItem:self.currentItem]; // index?
-  
-  [self advanceToNextItem];
+  [self postPlayerEvent:EMPlayerDidComplete withItem:self.currentItem];
+
+  // Don't cleanup automatically - user may want to replay the item, so leave it
+  // in queue.
 }
 
 - (void) itemFailedToComplete:(NSNotification*)notification {
@@ -547,8 +421,8 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 }
 
 - (void) cancelSeekTime {
-  [seekTimer_ invalidate];
-  seekTimer_ = nil;
+  [_seekTimer invalidate];
+  _seekTimer = nil;
 }
 
 - (void) seekOnTimer:(NSTimer*)timer {
@@ -559,10 +433,10 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   
   if (0 < timeDelta) {
     // forward
-    NSTimeInterval currentTime = CMTimeGetSeconds(queuePlayer_.currentTime);
+    NSTimeInterval currentTime = CMTimeGetSeconds(_queuePlayer.currentTime);
     NSTimeInterval itemDuration = CMTimeGetSeconds(self.currentPlayerItem.duration);
     if (timeDelta < (itemDuration - currentTime)) {
-      [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(self.currentTime + timeDelta, 1.0)];
+      [_queuePlayer seekToTime:CMTimeMakeWithSeconds(self.currentTime + timeDelta, 1.0)];
       [self seekTimeDelta:timeDelta afterDuration:duration];
     } else {
       // TODO: whatever 'end of track' actions would normally be performed - stop playing, advance, etc
@@ -570,10 +444,10 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
   } else {
     // backward
     if (timeDelta < self.currentTime) {
-      [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(self.currentTime + timeDelta, 1.0)];
+      [_queuePlayer seekToTime:CMTimeMakeWithSeconds(self.currentTime + timeDelta, 1.0)];
       [self seekTimeDelta:timeDelta afterDuration:duration];
     } else {
-      [queuePlayer_ seekToTime:CMTimeMakeWithSeconds(0.0, 1.0)];
+      [_queuePlayer seekToTime:CMTimeMakeWithSeconds(0.0, 1.0)];
       // TODO: whatever 'endSeek' actions are here - start playing again, who knows
     }
   }
@@ -582,7 +456,7 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
 - (void) seekTimeDelta:(NSTimeInterval)timeDelta afterDuration:(NSTimeInterval)duration {
   [self cancelSeekTime];
-  seekTimer_ = [NSTimer scheduledTimerWithTimeInterval:duration
+  _seekTimer = [NSTimer scheduledTimerWithTimeInterval:duration
                                                 target:self
                                               selector:@selector(seekOnTimer:)
                                               userInfo:@{ @"timeDelta" : @(timeDelta), @"duration" : @(duration) }
@@ -603,14 +477,6 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
 - (void) postPlayerEvent:(NSString*)eventName withItem:(EMMediaItem*)item forward:(BOOL)forward {
   [[NSNotificationCenter defaultCenter] postNotificationName:eventName object:self userInfo:@{ EMMediaItemKey : item, EMTimeKey : @(forward) }];
-}
-
-- (void) postPlayerEvent:(NSString*)eventName withOldItem:(EMMediaItem*)oldItem withNewItem:(EMMediaItem*)newItem {
-  [[NSNotificationCenter defaultCenter] postNotificationName:eventName object:self userInfo:(nil != newItem) ? @{ EMOldItemKey : oldItem, EMNewItemKey : newItem } : @{ EMOldItemKey : oldItem }];
-}
-
-- (void) postPlayerEvent:(NSString*)eventName withItem:(EMMediaItem*)item atIndex:(NSUInteger)index {
-  [[NSNotificationCenter defaultCenter] postNotificationName:eventName object:self userInfo:@{ EMMediaItemKey : item, EMIndexKey : @(index) }];
 }
 
 @end
