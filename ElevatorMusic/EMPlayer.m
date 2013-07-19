@@ -65,6 +65,7 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 
 @dynamic isPlaying;
 @dynamic currentTime;
+@dynamic duration;
 @dynamic currentPlayerItem;
 
 //
@@ -181,14 +182,21 @@ const NSUInteger EM_PLAYER_NO_ITEMS = NSUIntegerMax;
 }
 
 
+- (NSTimeInterval) duration {
+  return nil != _currentItem ? CMTimeGetSeconds(self.currentPlayerItem.duration) : 0.0;
+}
+
+
 - (void) setup {
   _queuePlayer = [[AVQueuePlayer alloc] init];
   [_queuePlayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
+
 - (void) cleanup {
   [self removeCurrentItem];
 }
+
 
 - (void) addItem:(EMMediaItem*)item {
   

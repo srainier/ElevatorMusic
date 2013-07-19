@@ -30,6 +30,7 @@
 
 @property (nonatomic, readonly) BOOL isSetup;
 @property (nonatomic, readonly) NSTimeInterval currentTime;
+@property (nonatomic, readonly) NSTimeInterval duration;
 @property (nonatomic, strong, readonly) EMMediaItem* currentItem;
 @property (nonatomic, weak) id<EMPlayerDelegate> delegate;
 
