@@ -28,4 +28,6 @@
 
 @property (nonatomic, weak) EMPlayer* player;
 
+- (void) becomeActiveAudioController;
+
 @end

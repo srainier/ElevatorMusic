@@ -7,7 +7,7 @@
 //
 
 #import "EMPlayerSession.h"
-#import "EMPlayer+globalPlayer.h"
+#import "EMPlayer.h"
 
 @implementation EMPlayerSession
 
@@ -39,60 +39,60 @@
 // Remote control event handling.
 //
 
-- (BOOL) handleRemoteControlReceivedEvent:(UIEvent *)event {
+- (BOOL) handleRemoteControlReceivedEvent:(UIEvent *)event withPlayer:(EMPlayer *)player {
   if (event.type == UIEventTypeRemoteControl) {
     switch (event.subtype) {
       case UIEventSubtypeRemoteControlPlay: {
-        [[EMPlayer globalPlayer] play];
+        [player play];
         break;
       }
         
       case UIEventSubtypeRemoteControlPause: {
-        [[EMPlayer globalPlayer] pause];
+        [player pause];
         break;
       }
         
       case UIEventSubtypeRemoteControlStop: {
-        [[EMPlayer globalPlayer] pause];
+        [player pause];
         break;
       }
         
       case UIEventSubtypeRemoteControlTogglePlayPause: {
-        if ([EMPlayer globalPlayer].isPlaying) {
-          [[EMPlayer globalPlayer] pause];
+        if (player.isPlaying) {
+          [player pause];
         } else {
-          [[EMPlayer globalPlayer] play];
+          [player play];
         }
         break;
       }
         
       case UIEventSubtypeRemoteControlPreviousTrack: {
-        [[EMPlayer globalPlayer] jumpByTime:-30];
+        [player jumpByTime:-30];
         break;
       }
         
       case UIEventSubtypeRemoteControlNextTrack: {
-        [[EMPlayer globalPlayer] jumpByTime:30];
+        [player jumpByTime:30];
         break;
       }
         
       case UIEventSubtypeRemoteControlBeginSeekingBackward: {
-        [[EMPlayer globalPlayer] beginSeekForward:NO];
+        [player beginSeekForward:NO];
         break;
       }
         
       case UIEventSubtypeRemoteControlEndSeekingBackward: {
-        [[EMPlayer globalPlayer] endSeek];
+        [player endSeek];
         break;
       }
         
       case UIEventSubtypeRemoteControlBeginSeekingForward: {
-        [[EMPlayer globalPlayer] beginSeekForward:YES];
+        [player beginSeekForward:YES];
         break;
       }
         
       case UIEventSubtypeRemoteControlEndSeekingForward: {
-        [[EMPlayer globalPlayer] endSeek];
+        [player endSeek];
         break;
       }
         

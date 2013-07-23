@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "EMPlaybackControl.h"
+@class EMPlayer;
 
 @interface EMPlayerSession : NSObject
 
 - (void) startAudioSession;
 - (void) endAudioSession;
 
-- (BOOL) handleRemoteControlReceivedEvent:(UIEvent *)event;
+- (BOOL) handleRemoteControlReceivedEvent:(UIEvent *)event withPlayer:(EMPlayer *)player;
 
 @end

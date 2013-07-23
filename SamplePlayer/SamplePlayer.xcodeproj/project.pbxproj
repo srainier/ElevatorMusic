@@ -13,7 +13,6 @@
 		7D0803BD15DA8C19007395D3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D0803BB15DA8C19007395D3 /* InfoPlist.strings */; };
 		7D0803BF15DA8C19007395D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803BE15DA8C19007395D3 /* main.m */; };
 		7D0803C315DA8C19007395D3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803C215DA8C19007395D3 /* AppDelegate.m */; };
-		7D0803DC15DA8CCE007395D3 /* EMBackgroundController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D315DA8CCE007395D3 /* EMBackgroundController.m */; };
 		7D0803DD15DA8CCE007395D3 /* EMMediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D515DA8CCE007395D3 /* EMMediaItem.m */; };
 		7D0803DE15DA8CCE007395D3 /* EMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803D815DA8CCE007395D3 /* EMPlayer.m */; };
 		7D0803DF15DA8CCE007395D3 /* EMPlayerEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803DB15DA8CCE007395D3 /* EMPlayerEvents.m */; };
@@ -22,6 +21,9 @@
 		7D0803E815DA8E87007395D3 /* SamplePlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0803E215DA8CFF007395D3 /* SamplePlayController.m */; };
 		7D0803EA15DA8EA1007395D3 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D0803E915DA8EA1007395D3 /* MediaPlayer.framework */; };
 		7D0803EB15DA94B3007395D3 /* SamplePlayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D0803E315DA8CFF007395D3 /* SamplePlayController.xib */; };
+		7DB08ECC179EC4D000CD7B7A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB08ECB179EC4D000CD7B7A /* Default-568h@2x.png */; };
+		7DB08ED1179EC92200CD7B7A /* EMPlayerSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08ECE179EC92200CD7B7A /* EMPlayerSession.m */; };
+		7DB08ED2179EC92200CD7B7A /* EMNowPlayingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08ECF179EC92200CD7B7A /* EMNowPlayingManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,8 +37,6 @@
 		7D0803C015DA8C19007395D3 /* SamplePlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SamplePlayer-Prefix.pch"; sourceTree = "<group>"; };
 		7D0803C115DA8C19007395D3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7D0803C215DA8C19007395D3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		7D0803D215DA8CCE007395D3 /* EMBackgroundController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMBackgroundController.h; sourceTree = "<group>"; };
-		7D0803D315DA8CCE007395D3 /* EMBackgroundController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMBackgroundController.m; sourceTree = "<group>"; };
 		7D0803D415DA8CCE007395D3 /* EMMediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMMediaItem.h; sourceTree = "<group>"; };
 		7D0803D515DA8CCE007395D3 /* EMMediaItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMMediaItem.m; sourceTree = "<group>"; };
 		7D0803D615DA8CCE007395D3 /* EMPlaybackControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlaybackControl.h; sourceTree = "<group>"; };
@@ -51,6 +51,11 @@
 		7D0803E415DA8E1D007395D3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		7D0803E615DA8E27007395D3 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		7D0803E915DA8EA1007395D3 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		7DB08ECB179EC4D000CD7B7A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		7DB08ECD179EC92200CD7B7A /* EMPlayerSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMPlayerSession.h; sourceTree = "<group>"; };
+		7DB08ECE179EC92200CD7B7A /* EMPlayerSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMPlayerSession.m; sourceTree = "<group>"; };
+		7DB08ECF179EC92200CD7B7A /* EMNowPlayingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMNowPlayingManager.m; sourceTree = "<group>"; };
+		7DB08ED0179EC92200CD7B7A /* EMNowPlayingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMNowPlayingManager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +78,7 @@
 		7D0803A315DA8C19007395D3 = {
 			isa = PBXGroup;
 			children = (
+				7DB08ECB179EC4D000CD7B7A /* Default-568h@2x.png */,
 				7D0803E915DA8EA1007395D3 /* MediaPlayer.framework */,
 				7D0803E615DA8E27007395D3 /* CoreMedia.framework */,
 				7D0803E415DA8E1D007395D3 /* AVFoundation.framework */,
@@ -128,8 +134,10 @@
 		7D0803D115DA8CCE007395D3 /* ElevatorMusic */ = {
 			isa = PBXGroup;
 			children = (
-				7D0803D215DA8CCE007395D3 /* EMBackgroundController.h */,
-				7D0803D315DA8CCE007395D3 /* EMBackgroundController.m */,
+				7DB08ECD179EC92200CD7B7A /* EMPlayerSession.h */,
+				7DB08ECE179EC92200CD7B7A /* EMPlayerSession.m */,
+				7DB08ED0179EC92200CD7B7A /* EMNowPlayingManager.h */,
+				7DB08ECF179EC92200CD7B7A /* EMNowPlayingManager.m */,
 				7D0803D415DA8CCE007395D3 /* EMMediaItem.h */,
 				7D0803D515DA8CCE007395D3 /* EMMediaItem.m */,
 				7D0803D615DA8CCE007395D3 /* EMPlaybackControl.h */,
@@ -169,7 +177,7 @@
 		7D0803A515DA8C19007395D3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = ElevatorMusic;
 			};
 			buildConfigurationList = 7D0803A815DA8C19007395D3 /* Build configuration list for PBXProject "SamplePlayer" */;
@@ -196,6 +204,7 @@
 			files = (
 				7D0803EB15DA94B3007395D3 /* SamplePlayController.xib in Resources */,
 				7D0803BD15DA8C19007395D3 /* InfoPlist.strings in Resources */,
+				7DB08ECC179EC4D000CD7B7A /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,10 +218,11 @@
 				7D0803E815DA8E87007395D3 /* SamplePlayController.m in Sources */,
 				7D0803BF15DA8C19007395D3 /* main.m in Sources */,
 				7D0803C315DA8C19007395D3 /* AppDelegate.m in Sources */,
-				7D0803DC15DA8CCE007395D3 /* EMBackgroundController.m in Sources */,
 				7D0803DD15DA8CCE007395D3 /* EMMediaItem.m in Sources */,
 				7D0803DE15DA8CCE007395D3 /* EMPlayer.m in Sources */,
 				7D0803DF15DA8CCE007395D3 /* EMPlayerEvents.m in Sources */,
+				7DB08ED1179EC92200CD7B7A /* EMPlayerSession.m in Sources */,
+				7DB08ED2179EC92200CD7B7A /* EMNowPlayingManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +247,9 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -264,6 +277,9 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;

@@ -23,11 +23,13 @@
 
 #import "SamplePlayController.h"
 #import "EMMediaItem.h"
+#import "EMPlayerSession.h"
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface SamplePlayController () {
-  BOOL isUpdatingTable_;
-  BOOL isDraggingSlider_;
+  BOOL _isUpdatingTable;
+  BOOL _isDraggingSlider;
+  EMPlayerSession *_playerSession;
 }
 
 @property (nonatomic, retain) IBOutlet UITextField* urlField;
@@ -66,21 +68,15 @@
 @implementation SamplePlayController
 
 // Public
-@synthesize player = player_;
-// Internal interface
-@synthesize urlField = urlField_;
-@synthesize timeSlider = timeSlider_;
-@synthesize playlistTable = playlistTable_;
-@synthesize playButton = playButton_;
-@synthesize backwardButton = backwardButton_;
-@synthesize forwardButton = forwardButton_;
-@synthesize volumeViewContainer = volumeViewContainer_;
+@synthesize player = _player;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
-    isUpdatingTable_ = NO;
-    isDraggingSlider_ = NO;
+    _isUpdatingTable = NO;
+    _isDraggingSlider = NO;
+    _playerSession = [[EMPlayerSession alloc] init];
   }
   return self;
 }
@@ -119,41 +115,59 @@
 }
 
 - (void) setPlayer:(EMPlayer *)player {
-  if (nil != player_) {
-    player_.delegate = nil;
-    [player_ cleanup];
+  if (nil != _player) {
+    _player.delegate = nil;
+    [_player cleanup];
   }
 
-  player_ = player;
-  player_.delegate = self;
-  [player_ setup];
+  _player = player;
+  _player.delegate = self;
+  [_player setup];
+}
+
+- (BOOL) canBecomeFirstResponder {
+  return YES;
+}
+
+- (void) remoteControlReceivedWithEvent:(UIEvent *)event {
+  if (![_playerSession handleRemoteControlReceivedEvent:event withPlayer:_player]) {
+    [super remoteControlReceivedWithEvent:event];
+  }
+}
+
+- (void) becomeActiveAudioController {
+  
+  [_playerSession startAudioSession];
+  [self becomeFirstResponder];
+  [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+  
 }
 
 - (void) playButtonTapGesture:(UITapGestureRecognizer*)gesture {
-  if (player_.isPlaying) {
-    [player_ pause];
+  if (_player.isPlaying) {
+    [_player pause];
   } else {
-    [player_ play];
+    [_player play];
   }
 }
 
 - (void) forwardButtonTapGesture:(UITapGestureRecognizer*)gesture {
   BOOL gotoNextTrack = YES;
   if (gotoNextTrack) {
-    [player_ moveToNext];
+    [_player moveToNext];
   } else {
-    [player_ jumpByTime:30];
+    [_player jumpByTime:30];
   }
 }
 
 - (void) forwardButtonPressGesture:(UILongPressGestureRecognizer*)gesture {
   if (UIGestureRecognizerStateBegan == gesture.state) {
-    [player_ beginSeekForward:YES];
+    [_player beginSeekForward:YES];
   } else if(UIGestureRecognizerStateEnded == gesture.state ||
             UIGestureRecognizerStateCancelled == gesture.state ||
             UIGestureRecognizerStateFailed == gesture.state) {
     // could be cancel, end, etc.
-    [player_ endSeek];
+    [_player endSeek];
   }
 }
 
@@ -162,16 +176,16 @@
   if (gotoPreviousTrack) {
 
   } else {
-    [player_ jumpByTime:-30];
+    [_player jumpByTime:-30];
   }
 }
 
 - (void) backwardButtonPressGesture:(UILongPressGestureRecognizer*)gesture {
   if (UIGestureRecognizerStateBegan == gesture.state) {
-    [player_ beginSeekForward:NO];
+    [_player beginSeekForward:NO];
   } else {
     // could be cancel, end, etc.
-    [player_ endSeek];
+    [_player endSeek];
   }
 }
 
@@ -179,28 +193,16 @@
 
 @implementation SamplePlayController (PlayerDelegate)
 
-- (void) player:(EMPlayer*)player didInitalizeSuccessfully:(BOOL)success {
-  // TODO
-}
-
-- (void) player:(EMPlayer*)player didInitalizeMediaItem:(EMMediaItem*)item success:(BOOL)success {
-  // TODO: update table view cell
-}
-
-- (void) player:(EMPlayer*)player didStartItem:(EMMediaItem*)item {
-  // TODO: update playing state
-}
-
 - (void) player:(EMPlayer*)player didPlayItem:(EMMediaItem*)item {
-  // TODO: update play button state
+  [self.playButton setTitle:@"Pause" forState:UIControlStateNormal];
 }
 
 - (void) player:(EMPlayer*)player didPauseItem:(EMMediaItem*)item {
-  // TODO: update play button state
+  [self.playButton setTitle:@"Play" forState:UIControlStateNormal];
 }
 
 - (void) player:(EMPlayer*)player didReachTime:(NSTimeInterval)time forItem:(EMMediaItem*)item duration:(NSTimeInterval)duration {
-  if (!isDraggingSlider_) {
+  if (!_isDraggingSlider) {
     self.timeSlider.minimumValue = 0.0;
     self.timeSlider.maximumValue = duration;
     self.timeSlider.value = time;
@@ -208,49 +210,7 @@
 }
 
 - (void) player:(EMPlayer*)player didCompleteItem:(EMMediaItem*)item {
-  // TODO:
-}
-
-- (void) player:(EMPlayer*)player didStartSeekingItem:(EMMediaItem*)item forward:(BOOL)forward {
-  
-}
-
-- (void) player:(EMPlayer*)player didEndSeekingItem:(EMMediaItem*)item {
-  
-}
-
-- (void) player:(EMPlayer*)player willAdvanceFromItem:(EMMediaItem*)oldItem toItem:(EMMediaItem*)newItem {
-  
-}
-
-- (void) player:(EMPlayer*)player didAdvanceFromItem:(EMMediaItem*)oldItem toItem:(EMMediaItem*)newItem {
-  
-}
-
-- (void) player:(EMPlayer*)player willAddItem:(EMMediaItem*)item atIndex:(NSUInteger)index totalItems:(NSUInteger)totalItems {
-  isUpdatingTable_ = YES;
-}
-
-- (void) player:(EMPlayer*)player didAddItem:(EMMediaItem*)item atIndex:(NSUInteger)index totalItems:(NSUInteger)totalItems {
-  isUpdatingTable_ = NO;
-  
-  [self.playlistTable beginUpdates];
-  [self.playlistTable insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]]
-                            withRowAnimation:UITableViewRowAnimationAutomatic];
-  [self.playlistTable endUpdates];
-}
-
-- (void) player:(EMPlayer*)player willRemoveItem:(EMMediaItem*)item atIndex:(NSUInteger)index totalItems:(NSUInteger)totalItems {
-  isUpdatingTable_ = YES;
-}
-
-- (void) player:(EMPlayer*)player didRemoveItem:(EMMediaItem*)item atIndex:(NSUInteger)index totalItems:(NSUInteger)totalItems {
-  isUpdatingTable_ = NO;
-
-  [self.playlistTable beginUpdates];
-  [self.playlistTable deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]]
-                            withRowAnimation:UITableViewRowAnimationAutomatic];
-  [self.playlistTable endUpdates];
+  [self.playButton setTitle:@"Play" forState:UIControlStateNormal];
 }
 
 @end
@@ -264,24 +224,20 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
   [textField resignFirstResponder];
 
-  BOOL addedItem = NO;
   NSError* error = nil;
   NSURL* itemUrl = [NSURL URLWithString:textField.text];
   if (nil != itemUrl) {
     
     EMMediaItem* mediaItem = [[EMMediaItem alloc] initWithUrl:itemUrl];
-    if (!(addedItem = [player_ addItem:mediaItem error:&error])) {
-      // something with the error
-    }
+    mediaItem.title = @"Sample Title";
+    mediaItem.artist = @"Sample Artist";
+    mediaItem.album = @"Sample Album";
+    [_player addItem:mediaItem];
     
   } else {
     error = [NSError errorWithDomain:@"SamplePlay" code:0 userInfo:nil];
   }
-  
-  if (!addedItem) {
-    // TODO: display error message
-  }
-  
+
   return YES;
 }
 
@@ -290,15 +246,15 @@
 @implementation SamplePlayController (TimeSlider)
 
 - (void) timeSliderTouchBegan:(UISlider*)slider {
-  isDraggingSlider_ = YES;
+  _isDraggingSlider = YES;
 }
 
 - (void) timeSliderTouchEnded:(UISlider*)slider {
-  isDraggingSlider_ = NO;
+  _isDraggingSlider = NO;
 }
 
 - (void) timeSliderValueChanged:(UISlider*)slider {
-  [player_ jumpToTime:slider.value];
+  [_player jumpToTime:slider.value];
 }
 
 @end
@@ -306,17 +262,13 @@
 @implementation SamplePlayController (PlaylistTable)
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return player_.items.count;
+  return _player.currentItem != nil ? 1 : 0;
 }
 
 - (UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"sample-cell"];
   
-  if (nil == cell) {
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"sample-cell"];
-  }
-  
-  cell.textLabel.text = [[(EMMediaItem*)[player_.items objectAtIndex:indexPath.row] url] relativeString];
+  cell.textLabel.text = _player.currentItem.url.relativeString;
   
   return cell;
 }

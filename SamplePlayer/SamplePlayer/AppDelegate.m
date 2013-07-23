@@ -22,13 +22,11 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
-#import "EMBackgroundController.h"
 #import "SamplePlayController.h"
 #import "EMPlayer.h"
 
 @interface AppDelegate ()
 
-@property (nonatomic, retain) EMBackgroundController* backgroundController;
 @property (nonatomic, retain) SamplePlayController* samplePlayController;
 @property (nonatomic, retain) EMPlayer* player;
 
@@ -37,24 +35,17 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
-@synthesize backgroundController = backgroundController_;
-@synthesize samplePlayController = samplePlayController_;
-@synthesize player = player_;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   
-  player_ = [[EMPlayer alloc] init];
-  backgroundController_ = [[EMBackgroundController alloc] init];
-  backgroundController_.player = player_;
+  _player = [[EMPlayer alloc] init];
   
-  samplePlayController_ = [[SamplePlayController alloc] initWithNibName:nil bundle:nil];
-  samplePlayController_.player = player_;
-  [backgroundController_.view addSubview:samplePlayController_.view];
+  _samplePlayController = [[SamplePlayController alloc] initWithNibName:nil bundle:nil];
+  _samplePlayController.player = _player;
+  [_samplePlayController becomeActiveAudioController];
   
-  [backgroundController_ becomeActiveAudioController];
-  
-  self.window.rootViewController = backgroundController_;
+  self.window.rootViewController = _samplePlayController;
   self.window.backgroundColor = [UIColor whiteColor];
   [self.window makeKeyAndVisible];
   return YES;
