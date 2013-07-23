@@ -10,8 +10,6 @@
 
 @interface EMNowPlayingManager : NSObject
 
-// TODO: associate this manager with an EMPlayer.
-
 - (void) start;
 - (void) stop;
 

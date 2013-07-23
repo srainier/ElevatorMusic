@@ -24,12 +24,14 @@
 #import "SamplePlayController.h"
 #import "EMMediaItem.h"
 #import "EMPlayerSession.h"
+#import "EMNowPlayingManager.h"
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface SamplePlayController () {
   BOOL _isUpdatingTable;
   BOOL _isDraggingSlider;
   EMPlayerSession *_playerSession;
+  EMNowPlayingManager *_nowPlayingManager;
 }
 
 @property (nonatomic, retain) IBOutlet UITextField* urlField;
@@ -77,6 +79,7 @@
     _isUpdatingTable = NO;
     _isDraggingSlider = NO;
     _playerSession = [[EMPlayerSession alloc] init];
+    _nowPlayingManager = [[EMNowPlayingManager alloc] init];
   }
   return self;
 }
@@ -140,6 +143,7 @@
   [_playerSession startAudioSession];
   [self becomeFirstResponder];
   [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+  [_nowPlayingManager start];
   
 }
 
